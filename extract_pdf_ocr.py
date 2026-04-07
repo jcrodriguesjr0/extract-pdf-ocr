@@ -10,17 +10,17 @@ def extract_text_from_pdfs(folder_path, output_file):
     """
     pdfs = sorted(glob.glob(os.path.join(folder_path, "*.pdf")))
     
-    # Ensure Tesseract can find Portuguese language pack, 
+    # Ensure Tesseract can find the Portuguese language pack, 
     # pytesseract uses 'por' for Portuguese.
     
     with open(output_file, "w", encoding="utf-8") as f:
         if not pdfs:
-            f.write("Nenhum arquivo PDF encontrado na pasta.\n")
-            print("Nenhum arquivo PDF encontrado.")
+            f.write("No PDF files found in the target directory.\n")
+            print("No PDF files found.")
             return
 
         for pdf_file in pdfs:
-            print(f"Processando arquivo: {os.path.basename(pdf_file)}")
+            print(f"Processing file: {os.path.basename(pdf_file)}")
             f.write(f"==== {os.path.basename(pdf_file)} ====\n")
             try:
                 # Convert PDF pages to images
@@ -28,20 +28,20 @@ def extract_text_from_pdfs(folder_path, output_file):
                 images = convert_from_path(pdf_file)
                 
                 for i, img in enumerate(images):
-                    print(f"  -> OCR na página {i + 1}")
+                    print(f"  -> Running OCR on page {i + 1}")
                     # Extract text from image
                     text = pytesseract.image_to_string(img, lang="por")
                     f.write(f"--- Page {i+1} ---\n{text}\n")
                     
             except Exception as e:
-                error_msg = f"Erro ao processar {os.path.basename(pdf_file)}: {e}"
+                error_msg = f"Error processing {os.path.basename(pdf_file)}: {e}"
                 print(error_msg)
                 f.write(f"Error: {e}\n")
                 
-    print(f"Finalizado. Saída salva em: {output_file}")
+    print(f"Finished. Output saved to: {output_file}")
 
 if __name__ == "__main__":
-    # Exemplo de uso
-    target_folder = "."  # Pasta atual
-    output_path = "resultado_ocr.txt"
+    # Usage Example
+    target_folder = "."  # Current Directory
+    output_path = "ocr_results.txt"
     extract_text_from_pdfs(target_folder, output_path)
